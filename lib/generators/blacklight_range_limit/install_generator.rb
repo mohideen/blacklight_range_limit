@@ -16,7 +16,7 @@ module BlacklightRangeLimit
 
     def install_search_builder
       path = 'app/models/search_builder.rb'
-      if File.exists? path
+      if File.exist? path
         inject_into_file path, after: /include Blacklight::Solr::SearchBuilderBehavior.*$/ do
           "\n  include BlacklightRangeLimit::RangeLimitBuilder\n"
         end
@@ -26,7 +26,27 @@ module BlacklightRangeLimit
     end
 
     def install_search_history_controller
-     copy_file "search_history_controller.rb", "app/controllers/search_history_controller.rb"
+      path = 'app/controllers/search_history_controller.rb'
+      if File.exist? path
+        inject_into_file path, after: /include Blacklight::SearchHistory.*$/ do
+          "\n  helper BlacklightRangeLimit::ViewHelperOverride"\
+          "\n  helper RangeLimitHelper"
+        end
+      else
+        copy_file 'search_history_controller.rb', path
+      end
+    end
+
+    def install_saved_searches_controller
+      path = 'app/controllers/saved_searches_controller.rb'
+      if File.exist? path
+        inject_into_file path, after: /include Blacklight::SavedSearches.*$/ do
+          "\n  helper BlacklightRangeLimit::ViewHelperOverride"\
+          "\n  helper RangeLimitHelper"
+        end
+      else
+        copy_file 'saved_searches_controller.rb', path
+      end
     end
 
     def install_routing_concern
