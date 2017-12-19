@@ -46,8 +46,18 @@ $(".range_limit .profile .range.slider_js").each(function() {
      }
    }
 
-  begin_el.val(min);
-  end_el.val(max);
+  //begin_el.val(min);
+  //end_el.val(max);
+
+  $.fn.datepicker.defaults.format = "yyyy-mm-dd";
+
+  begin_el.datepicker({
+    startDate: min
+  });
+  
+  end_el.datepicker({
+    startDate: max
+  });
         
   begin_el.change( function() {
     var val = BlacklightRangeLimit.parseNum($(this).val());
